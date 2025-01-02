@@ -1,134 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FHIR Observation JSON Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    label {
-      font-weight: bold;
-    }
-    input, select {
-      margin-bottom: 10px;
-      display: block;
-      width: 100%;
-      padding: 8px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    pre {
-      background: #f4f4f4;
-      border: 1px solid #ddd;
-      padding: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吸菸問卷</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-
-  <h1>FHIR Observation JSON Generator</h1>
-  <form id="fhirForm">
-    <label for="patientId">Patient ID:</label>
-    <input type="text" id="patientId" placeholder="Enter Patient ID" required>
-
-    <label for="patientName">Patient Name:</label>
-    <input type="text" id="patientName" placeholder="Enter Patient Name" required>
-
-    <label for="observationDate">Observation Date/Time:</label>
-    <input type="datetime-local" id="observationDate" required>
-
-    <label for="smokingStatus">Smoking Status:</label>
-    <select id="smokingStatus" required>
-      <option value="SMOKER">Current smoker</option>
-      <option value="NONSMOKER">Non-smoker</option>
-      <option value="EXSMOKER">Ex-smoker</option>
-    </select>
-
-    <label for="practitionerName">Practitioner Name:</label>
-    <input type="text" id="practitionerName" placeholder="Enter Practitioner Name" required>
-
-    <button type="button" onclick="generateFHIRJSON()">Generate JSON</button>
-  </form>
-
-  <h2>Generated FHIR Observation JSON:</h2>
-  <pre id="output"></pre>
-
-  <script>
-    function generateFHIRJSON() {
-      // 取得使用者輸入的資料
-      const patientId = document.getElementById("patientId").value;
-      const patientName = document.getElementById("patientName").value;
-      const observationDate = document.getElementById("observationDate").value;
-      const smokingStatus = document.getElementById("smokingStatus").value;
-      const practitionerName = document.getElementById("practitionerName").value;
-
-      // 建立 FHIR Observation JSON 物件
-      const fhirObservation = {
-        resourceType: "Observation",
-        id: "smoking-status-survey",
-        status: "final",
-        code: {
-          coding: [
-            {
-              system: "http://loinc.org",
-              code: "72166-2",
-              display: "Tobacco smoking status"
-            }
-          ],
-          text: "Smoking Status"
-        },
-        subject: {
-          reference: `Patient/${patientId}`,
-          display: patientName
-        },
-        effectiveDateTime: observationDate,
-        issued: new Date().toISOString(),
-        valueCodeableConcept: {
-          coding: [
-            {
-              system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-              code: smokingStatus,
-              display: getSmokingStatusDisplay(smokingStatus)
-            }
-          ],
-          text: getSmokingStatusDisplay(smokingStatus)
-        },
-        performer: [
-          {
-            reference: "Practitioner/001",
-            display: practitionerName
-          }
-        ]
-      };
-
-      // 將 JSON 物件顯示在網頁上
-      document.getElementById("output").textContent = JSON.stringify(fhirObservation, null, 2);
-    }
-
-    // 將代碼轉換成顯示文字
-    function getSmokingStatusDisplay(code) {
-      switch (code) {
-        case "SMOKER":
-          return "Current smoker";
-        case "NONSMOKER":
-          return "Non-smoker";
-        case "EXSMOKER":
-          return "Ex-smoker";
-        default:
-          return "Unknown";
-      }
-    }
-  </script>
+    <h1>吸菸問卷</h1>
+    <form id="survey-form">
+        <div class="form-group">
+            <label for="user_id">User ID :</label>
+            <input type="text" id="user_id" name="user_id" required>
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="smoking_frequency">Smoking Frequency:</label>
+            <select id="smoking_frequency" name="smoking_frequency" required>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="occasionally">Occasionally</option>
+                <option value="none">None</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="smoking_reason">Smoking Reason:</label>
+            <input type="text" id="smoking_reason" name="smoking_reason" placeholder="e.g., stress, habit" required>
+        </div>
+        <div class="form-group">
+            <label for="comments">Comments:</label>
+            <textarea id="comments" name="comments" rows="4" placeholder="Enter your comments here..."></textarea>
+        </div>
+        <button type="submit">提交</button>
+    </form>
 </body>
 </html>
